@@ -4,3 +4,5 @@ Projeto desenvolvido durante o curso da Alura - Java: trabalhando com lambdas, s
 
 Curso com finalidade de apresentar a interface de linha de comando do SpringBoot + uso da biblioteca de
 stream para manipulação de dados através de um consumo de API.
+
+TESTE DO USO PARA O GIT REVERT
