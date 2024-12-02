@@ -1,5 +1,6 @@
 package br.com.rafaelaperruci.screenmatch_cmd_line;
 
+import br.com.rafaelaperruci.screenmatch_cmd_line.models.EpisodeData;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeriesData;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.ConsumerAPI;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.DataParser;
@@ -26,6 +27,10 @@ public class ScreenmatchCmdLineApplication implements CommandLineRunner {
 		DataParser dataParser = new DataParser();
 
 		SeriesData serie1 = dataParser.fromObject(json, SeriesData.class);
+		json = consumerAPI.getData("http://www.omdbapi.com/?apikey=f33cc024&t=the+walking+dead&season=8&episode=7");
+		EpisodeData episode1 = dataParser.fromObject(json, EpisodeData.class);
+
 		System.out.println(serie1);
+		System.out.println(episode1);
 	}
 }
