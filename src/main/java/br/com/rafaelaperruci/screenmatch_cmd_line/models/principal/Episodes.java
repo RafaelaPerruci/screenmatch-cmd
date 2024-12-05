@@ -2,6 +2,7 @@ package br.com.rafaelaperruci.screenmatch_cmd_line.models.principal;
 
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.EpisodeData;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 
 public class Episodes {
@@ -15,8 +16,17 @@ public class Episodes {
         this.season = season;
         this.title = eps.title();
         this.numEpisode = eps.epNumber();
-        this.rate = Double.valueOf(eps.rating());
-        this.date = LocalDate.parse(eps.yearRelease());
+
+        try {
+            this.rate = Double.valueOf(eps.rating());
+        }catch (NumberFormatException ex){
+            this.rate = 0.0;
+        }
+        try {
+            this.date = LocalDate.parse(eps.yearRelease());
+        }catch (DateTimeException e){
+            this.date = null;
+        }
     }
 
     public Integer getSeason() {
