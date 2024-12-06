@@ -8,5 +8,8 @@ public record SeriesData(@JsonAlias("Title") String title,
                          @JsonAlias("Year") String year,
                          @JsonAlias("Genre") String genre,
                          @JsonAlias("imdbRating") Double rate,
-                         Integer totalSeasons) {
+                         Integer totalSeasons,
+                         @JsonAlias("Actors") String actors,
+                         @JsonAlias("Poster") String poster,
+                         @JsonAlias("Plot") String sinopse) {
 }
