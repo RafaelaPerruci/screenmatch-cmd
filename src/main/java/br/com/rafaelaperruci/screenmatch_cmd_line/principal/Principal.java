@@ -1,7 +1,8 @@
-package br.com.rafaelaperruci.screenmatch_cmd_line.models.principal;
+package br.com.rafaelaperruci.screenmatch_cmd_line.principal;
 
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.EpisodeData;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeasonData;
+import br.com.rafaelaperruci.screenmatch_cmd_line.models.Serie;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeriesData;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.ConsumerAPI;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.DataParser;
@@ -21,7 +22,7 @@ public class Principal {
     private final ConsumerAPI consumerAPI = new ConsumerAPI();
     private DataParser dataParser = new DataParser();
     private Scanner scanner = new Scanner(System.in);
-    List<SeriesData> series = new ArrayList<>();
+    List<SeriesData> seriesData = new ArrayList<>();
 
 
     public void displayMenu(){
@@ -65,12 +66,16 @@ public class Principal {
     }
 
     private void listSearchedSeries() {
-        series.forEach(System.out::println);
+        List<Serie> series = new ArrayList<>();
+        series = seriesData.stream().map(sd -> new Serie(sd)).collect(Collectors.toList());
+        series.stream()
+                .sorted(Comparator.comparing(Serie::getGenre))
+                .forEach(System.out::println);
     }
 
     private void fetchWebSerie(){
         SeriesData serie = getWebSerie();
-        series.add(serie);
+        seriesData.add(serie);
         System.out.println(serie);
 
     }
@@ -107,13 +112,6 @@ public class Principal {
         }
         seasons.forEach(System.out::println);
 
-        IDataParser iDataParser = new IDataParser() {
-            @Override
-            public <T> T fromObject(String json, Class<T> obj) {
-                return null;
-            }
-        };
+
     }
-
-
 }

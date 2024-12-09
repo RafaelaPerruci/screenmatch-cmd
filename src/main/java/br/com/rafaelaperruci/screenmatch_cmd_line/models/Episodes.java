@@ -1,6 +1,4 @@
-package br.com.rafaelaperruci.screenmatch_cmd_line.models.principal;
-
-import br.com.rafaelaperruci.screenmatch_cmd_line.models.EpisodeData;
+package br.com.rafaelaperruci.screenmatch_cmd_line.models;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
