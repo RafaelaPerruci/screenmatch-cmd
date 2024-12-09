@@ -1,5 +1,7 @@
 package br.com.rafaelaperruci.screenmatch_cmd_line.models;
 
+import br.com.rafaelaperruci.screenmatch_cmd_line.services.ChatGPTSearch;
+
 import java.util.OptionalDouble;
 
 public class Serie {
@@ -18,7 +20,8 @@ public class Serie {
         this.genre = Category.fromString(serie.genre().split(",")[0].trim());
         this.actors = serie.actors();
         this.poster = serie.poster();
-        this.sinopse = serie.sinopse();
+        ChatGPTSearch chat = new ChatGPTSearch();
+        this.sinopse = chat.translation(serie.sinopse()).trim();
 
     }
 
