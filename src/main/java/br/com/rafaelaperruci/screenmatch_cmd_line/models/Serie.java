@@ -1,17 +1,39 @@
 package br.com.rafaelaperruci.screenmatch_cmd_line.models;
 
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.ChatGPTSearch;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
 
+@Entity
+@Table(name = "series")
 public class Serie {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true)
     private String title;
+
     private Integer totalSeasons;
+
     private Double rate;
+
+    @Enumerated(EnumType.STRING)
     private Category genre;
+
     private String actors;
+
     private String poster;
+
+    @Column(length = 500)
     private String sinopse;
+
+    @Transient  //annotation para ignorar atributos
+    private List<Episodes> episodes = new ArrayList<>();
 
     public Serie(SeriesData serie){
         this.title = serie.title();
@@ -22,6 +44,18 @@ public class Serie {
         this.poster = serie.poster();
         this.sinopse = ChatGPTSearch.translation(serie.sinopse()).trim();
 
+    }
+
+    public Serie() {
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -79,6 +113,15 @@ public class Serie {
     public void setSinopse(String sinopse) {
         this.sinopse = sinopse;
     }
+
+    public List<Episodes> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episodes> episodes) {
+        this.episodes = episodes;
+    }
+
     public String toString(){
         return "Título: " + title +"\n" +
                 "Categoria: " + genre + "\n" +

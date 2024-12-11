@@ -4,9 +4,12 @@ import br.com.rafaelaperruci.screenmatch_cmd_line.models.EpisodeData;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeasonData;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.Serie;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeriesData;
+import br.com.rafaelaperruci.screenmatch_cmd_line.repository.SerieRepository;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.ConsumerAPI;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.DataParser;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.IDataParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -24,6 +27,12 @@ public class Principal {
     private Scanner scanner = new Scanner(System.in);
     List<SeriesData> seriesData = new ArrayList<>();
 
+    private SerieRepository serieRepository;
+
+    public Principal(SerieRepository serieRepository){
+        this.serieRepository = serieRepository;
+
+    }
 
     public void displayMenu(){
 
@@ -75,8 +84,10 @@ public class Principal {
 
     private void fetchWebSerie(){
         SeriesData serie = getWebSerie();
-        seriesData.add(serie);
-        System.out.println(serie);
+        //seriesData.add(serie);
+        Serie serieClass = new Serie(serie);
+        serieRepository.save(serieClass);
+        System.out.println(serieClass);
 
     }
 
