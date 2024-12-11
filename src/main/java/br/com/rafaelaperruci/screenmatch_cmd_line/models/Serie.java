@@ -20,8 +20,7 @@ public class Serie {
         this.genre = Category.fromString(serie.genre().split(",")[0].trim());
         this.actors = serie.actors();
         this.poster = serie.poster();
-        ChatGPTSearch chat = new ChatGPTSearch();
-        this.sinopse = chat.translation(serie.sinopse()).trim();
+        this.sinopse = ChatGPTSearch.translation(serie.sinopse()).trim();
 
     }
 

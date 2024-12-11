@@ -10,9 +10,9 @@ import java.util.Scanner;
 public class ChatGPTSearch {
 
 
-    private String apiKey = "";
+    private static String apiKey = "";
 
-    public String translation(String texto) {
+    public static String translation(String texto) {
 
 
         try (BufferedReader br = new BufferedReader(new FileReader("src\\main\\resources\\api-chatgpt-key"))) {
@@ -24,7 +24,7 @@ public class ChatGPTSearch {
         OpenAiService service = new OpenAiService(apiKey);
 
 
-        CompletionRequest requisicao = CompletionRequest.builder()
+        CompletionRequest request = CompletionRequest.builder()
                 .model("gpt-3.5-turbo-instruct")
                 .prompt("traduza para o português o texto: " + texto)
                 .maxTokens(1000)
@@ -32,7 +32,7 @@ public class ChatGPTSearch {
                 .build();
 
 
-        var response = service.createCompletion(requisicao);
+        var response = service.createCompletion(request);
         return response.getChoices().get(0).getText();
     }
 }
