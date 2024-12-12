@@ -1,14 +1,30 @@
 package br.com.rafaelaperruci.screenmatch_cmd_line.models;
 
+import jakarta.persistence.*;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "episodes")
 public class Episodes {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private Integer season;
     private String title;
     private Integer numEpisode;
     private Double rate;
     private LocalDate date;
+
+    @ManyToOne
+    private Serie serie;
+
+    public Episodes(){
+
+    }
 
     public Episodes(Integer season, EpisodeData eps){
         this.season = season;
@@ -25,6 +41,22 @@ public class Episodes {
         }catch (DateTimeException e){
             this.date = null;
         }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
     }
 
     public Integer getSeason() {

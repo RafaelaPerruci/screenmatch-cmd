@@ -32,7 +32,7 @@ public class Serie {
     @Column(length = 500)
     private String sinopse;
 
-    @Transient  //annotation para ignorar atributos
+    @OneToMany(mappedBy = "serie")
     private List<Episodes> episodes = new ArrayList<>();
 
     public Serie(SeriesData serie){

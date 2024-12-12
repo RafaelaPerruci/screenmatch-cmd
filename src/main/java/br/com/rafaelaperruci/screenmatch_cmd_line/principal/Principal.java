@@ -1,21 +1,16 @@
 package br.com.rafaelaperruci.screenmatch_cmd_line.principal;
 
-import br.com.rafaelaperruci.screenmatch_cmd_line.models.EpisodeData;
+import br.com.rafaelaperruci.screenmatch_cmd_line.models.Episodes;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeasonData;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.Serie;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeriesData;
 import br.com.rafaelaperruci.screenmatch_cmd_line.repository.SerieRepository;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.ConsumerAPI;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.DataParser;
-import br.com.rafaelaperruci.screenmatch_cmd_line.services.IDataParser;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +23,8 @@ public class Principal {
     List<SeriesData> seriesData = new ArrayList<>();
 
     private SerieRepository serieRepository;
+
+    private List<Serie> listSeriesGlobal = new ArrayList<>();
 
     public Principal(SerieRepository serieRepository){
         this.serieRepository = serieRepository;
@@ -75,10 +72,10 @@ public class Principal {
     }
 
     private void listSearchedSeries() {
-        List<Serie> series = serieRepository.findAll();
-        series.stream().sorted(Comparator.comparing(Serie::getGenre))
+        listSeriesGlobal = serieRepository.findAll();
+        List<Serie> seriesSorted = listSeriesGlobal.stream().sorted(Comparator.comparing(Serie::getGenre))
                 .collect(Collectors.toList());
-        series.forEach(s -> System.out.println(s + "\n"));
+        seriesSorted.forEach(s -> System.out.println(s + "\n"));
                 //List<Serie> series = new ArrayList<>();
 //        series = seriesData.stream().map(sd -> new Serie(sd)).collect(Collectors.toList());
 //        series.stream()
@@ -111,22 +108,43 @@ public class Principal {
 
     }
     private void fetchEpisodeSerie(){
-        SeriesData seriesData = getWebSerie();
-        String title = null;
-        try {
-            title = URLEncoder.encode(seriesData.title(), StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            System.out.println("Encoding não suportado: " + e.getMessage());
-        }
-        List<SeasonData> seasons = new ArrayList<>();
+        listSearchedSeries();
+        System.out.println("Escolha uma série pelo nome: ");
+        var serieName = scanner.nextLine();
 
-        for (int i = 1; i < seriesData.totalSeasons(); i++){
-            var json = consumerAPI.getData(URL + title.toLowerCase() + "&season=" + i);
-            SeasonData seasonData = dataParser.fromObject(json, SeasonData.class);
-            seasons.add(seasonData);
+        Optional<Serie> firstSerie = listSeriesGlobal
+                .stream()
+                .filter(s -> s.getTitle().toLowerCase().contains(serieName.toLowerCase()))
+                .findFirst();
 
+        if (firstSerie.isPresent()) {
+            var serieFound = firstSerie.get();
+            String title = null;
+            try {
+                title = URLEncoder.encode(serieFound.getTitle(), StandardCharsets.UTF_8.toString());
+            } catch (UnsupportedEncodingException e) {
+                System.out.println("Encoding não suportado: " + e.getMessage());
+            }
+            List<SeasonData> seasons = new ArrayList<>();
+
+            for (int i = 1; i < serieFound.getTotalSeasons(); i++) {
+                var json = consumerAPI.getData(URL + title.toLowerCase() + "&season=" + i);
+                SeasonData seasonData = dataParser.fromObject(json, SeasonData.class);
+                seasons.add(seasonData);
+            }
+            seasons.forEach(System.out::println);
+
+            List<Episodes> episodes = seasons.stream()
+                    .flatMap(ds -> ds.episodes().stream().map(e -> new Episodes(ds.number(), e)))
+                    .collect(Collectors.toList());
+
+            serieFound.setEpisodes(episodes);
+
+
+            serieRepository.save(serieFound);
+        }else{
+            System.out.println("Série não encontrada!");
         }
-        seasons.forEach(System.out::println);
 
 
     }
