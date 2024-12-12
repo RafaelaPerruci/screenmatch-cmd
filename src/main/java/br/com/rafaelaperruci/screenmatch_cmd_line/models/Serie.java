@@ -125,7 +125,7 @@ public class Serie {
     public String toString(){
         return "Título: " + title +"\n" +
                 "Categoria: " + genre + "\n" +
-                "Total de temporadas : " + totalSeasons + "\n" +
+                "Total de temporadas: " + totalSeasons + "\n" +
                 "Avaliação: " + rate + "\n" +
                 "Atores: " + actors + "\n" +
                 "Poster: " + poster + "\n" +

@@ -10,18 +10,18 @@ import java.util.Scanner;
 public class ChatGPTSearch {
 
 
-    private static String apiKey = "";
+//    private static String apiKey = "";
 
     public static String translation(String texto) {
 
 
-        try (BufferedReader br = new BufferedReader(new FileReader("src\\main\\resources\\api-chatgpt-key"))) {
-            apiKey = br.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try (BufferedReader br = new BufferedReader(new FileReader("src\\main\\resources\\api-chatgpt-key"))) {
+//            apiKey = br.readLine();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        OpenAiService service = new OpenAiService(apiKey);
+        OpenAiService service = new OpenAiService(System.getenv("OPENAI_KEY"));
 
 
         CompletionRequest request = CompletionRequest.builder()

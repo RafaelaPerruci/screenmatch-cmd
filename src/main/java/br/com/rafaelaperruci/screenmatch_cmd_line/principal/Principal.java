@@ -75,11 +75,16 @@ public class Principal {
     }
 
     private void listSearchedSeries() {
-        List<Serie> series = new ArrayList<>();
-        series = seriesData.stream().map(sd -> new Serie(sd)).collect(Collectors.toList());
-        series.stream()
-                .sorted(Comparator.comparing(Serie::getGenre))
-                .forEach(System.out::println);
+        List<Serie> series = serieRepository.findAll();
+        series.stream().sorted(Comparator.comparing(Serie::getGenre))
+                .collect(Collectors.toList());
+        series.forEach(s -> System.out.println(s + "\n"));
+                //List<Serie> series = new ArrayList<>();
+//        series = seriesData.stream().map(sd -> new Serie(sd)).collect(Collectors.toList());
+//        series.stream()
+//                .sorted(Comparator.comparing(Serie::getGenre))
+//                .forEach(System.out::println);
+
     }
 
     private void fetchWebSerie(){
