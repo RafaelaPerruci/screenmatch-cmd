@@ -44,6 +44,7 @@ public class Principal {
                     8 - Buscar séries por número de temporadas e bem avaliadas
                     9 - Buscar episódio pelo nome
                     10 - Buscar top 5 episódios de série
+                    11 - Buscar episódios por série e ano de lançamento
                                     
                     0 - Sair                                 
                     """;
@@ -84,6 +85,9 @@ public class Principal {
                 case 10:
                     findTopEpisodesBySerie();
                     break;
+                case 11:
+                    findEpisodesByRespectiveDate();
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -93,6 +97,18 @@ public class Principal {
 
         }
 
+    }
+
+    private void findEpisodesByRespectiveDate() {
+        findSerieByTitle();
+        if (serieOptional.isPresent()){
+            Serie serie = serieOptional.get();
+            System.out.println("Digite o ano limite de lançamento: ");
+            var year = scanner.nextInt();
+            scanner.nextLine();
+            List<Episodes> topEpisodes = serieRepository.findEpisodesByYear(serie, year);
+            topEpisodes.forEach(System.out::println);
+        }
     }
 
     private void findTopEpisodesBySerie() {
