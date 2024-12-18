@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.OptionalInt;
 
 @Entity
 @Table(name = "series")
@@ -32,12 +33,16 @@ public class Serie {
     @Column(length = 500)
     private String sinopse;
 
-    @OneToMany(mappedBy = "serie")
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Episodes> episodes = new ArrayList<>();
 
     public Serie(SeriesData serie){
         this.title = serie.title();
-        this.totalSeasons = serie.totalSeasons();
+        if (serie.totalSeasons() != null) {
+            this.totalSeasons = serie.totalSeasons();
+        }else {
+            this.totalSeasons = 1;
+        }
         this.rate = OptionalDouble.of(Double.valueOf(serie.rate())).orElse(0);
         this.genre = Category.fromString(serie.genre().split(",")[0].trim());
         this.actors = serie.actors();
@@ -119,6 +124,9 @@ public class Serie {
     }
 
     public void setEpisodes(List<Episodes> episodes) {
+        episodes.forEach(e -> e.setSerie(this));
+        //associando a cada episódio a série que ele pertence
+        //antes de setar a lista intera de episodios
         this.episodes = episodes;
     }
 
@@ -129,6 +137,7 @@ public class Serie {
                 "Avaliação: " + rate + "\n" +
                 "Atores: " + actors + "\n" +
                 "Poster: " + poster + "\n" +
-                "Sinopse: " + sinopse;
+                "Sinopse: " + sinopse + "\n" +
+                "Episodes: " + episodes;
     }
 }

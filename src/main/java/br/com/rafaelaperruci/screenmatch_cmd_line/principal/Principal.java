@@ -1,9 +1,6 @@
 package br.com.rafaelaperruci.screenmatch_cmd_line.principal;
 
-import br.com.rafaelaperruci.screenmatch_cmd_line.models.Episodes;
-import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeasonData;
-import br.com.rafaelaperruci.screenmatch_cmd_line.models.Serie;
-import br.com.rafaelaperruci.screenmatch_cmd_line.models.SeriesData;
+import br.com.rafaelaperruci.screenmatch_cmd_line.models.*;
 import br.com.rafaelaperruci.screenmatch_cmd_line.repository.SerieRepository;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.ConsumerAPI;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.DataParser;
@@ -39,6 +36,11 @@ public class Principal {
                     1 - Buscar séries
                     2 - Buscar episódios
                     3 - Listar séries buscadas
+                    4 - Buscar série pelo nome
+                    5 - Buscar séries por ator
+                    6 - Top 5 séries 
+                    7 - Buscar séries por categoria
+                    8 - Buscar séries por número de temporadas e bem avaliadas
                                     
                     0 - Sair                                 
                     """;
@@ -55,11 +57,25 @@ public class Principal {
                 case 2:
                     fetchEpisodeSerie();
                     break;
-
                 case 3:
                     listSearchedSeries();
                     break;
-
+                case 4:
+                    findSerieByTitle();
+                    break;
+                case 5:
+                    findSerieByActor();
+                    break;
+                case 6:
+                    findTopFive();
+                    break;
+                    
+                case 7:
+                    findSeriesByCategory();
+                    break;
+                case 8:
+                    findSeriesTotalSeasonsWellRated();
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -67,6 +83,52 @@ public class Principal {
                     System.out.println("Opção inválida");
             }
 
+        }
+
+    }
+
+    private void findSeriesTotalSeasonsWellRated() {
+        System.out.println("Digite o número máximo de temporadas que deseja buscar séries correspondentes: ");
+        var temporadas = scanner.nextInt();
+        System.out.println("Digite a avaliação mínima que deseja para descobrir séries: ");
+        var rate = scanner.nextDouble();
+        List<Serie> series = serieRepository.findByTotalSeasonsLessThanEqualAndAndRateGreaterThanEqual(temporadas, rate);
+        System.out.println("");
+        series.forEach(s -> System.out.println(s.getTitle() + " - Avaliação: " + s.getRate()));
+    }
+
+    private void findSeriesByCategory() {
+
+        System.out.println("Digite o gênero que deseja buscar: ");
+        var nameCategory = scanner.nextLine();
+        Category category = Category.fromPortuguese(nameCategory);
+        List<Serie> serieGenre = serieRepository.findByGenre(category);
+        System.out.println("Séries de " + nameCategory + ": \n");
+        serieGenre.forEach(s -> System.out.println(s.getTitle()));
+    }
+
+    private void findTopFive() {
+        List<Serie> seriesTop = serieRepository.findTop5ByOrderByRateDesc();
+        seriesTop.forEach(s -> System.out.println(s.getTitle() + " - Avaliação: " + s.getRate()));
+    }
+
+    private void findSerieByActor() {
+        System.out.println("Qual o nome do ator que deseja buscar? ");
+        var name = scanner.nextLine();
+//        List<Serie> findSeries = serieRepository.findByActorsContainingIgnoreCase(name);
+        List<Serie> findSeries = serieRepository.findByActorsContainingIgnoreCaseAndRateGreaterThanEqual(name, 8.5);
+        findSeries.forEach(s -> System.out.println(s.getTitle() + " - Avaliação: " + s.getRate()));
+
+    }
+
+    private void findSerieByTitle() {
+        System.out.println("Digite o nome da serie que deseja buscar: ");
+        var name = scanner.nextLine();
+        Optional<Serie> serieFetched = serieRepository.findByTitleContainingIgnoreCase(name);
+        if (serieFetched.isPresent()){
+            System.out.println(serieFetched.get());
+        }else {
+            System.out.println("Série não encontrada.");
         }
 
     }
@@ -109,13 +171,11 @@ public class Principal {
     }
     private void fetchEpisodeSerie(){
         listSearchedSeries();
+        listSeriesGlobal.forEach(s -> System.out.println(s.getTitle()));
         System.out.println("Escolha uma série pelo nome: ");
         var serieName = scanner.nextLine();
 
-        Optional<Serie> firstSerie = listSeriesGlobal
-                .stream()
-                .filter(s -> s.getTitle().toLowerCase().contains(serieName.toLowerCase()))
-                .findFirst();
+        Optional<Serie> firstSerie = serieRepository.findByTitleContainingIgnoreCase(serieName);
 
         if (firstSerie.isPresent()) {
             var serieFound = firstSerie.get();
@@ -139,9 +199,9 @@ public class Principal {
                     .collect(Collectors.toList());
 
             serieFound.setEpisodes(episodes);
-
-
             serieRepository.save(serieFound);
+
+
         }else{
             System.out.println("Série não encontrada!");
         }
