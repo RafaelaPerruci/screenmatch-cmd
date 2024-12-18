@@ -22,6 +22,7 @@ public class Principal {
     private SerieRepository serieRepository;
 
     private List<Serie> listSeriesGlobal = new ArrayList<>();
+    private Optional<Serie> serieOptional;
 
     public Principal(SerieRepository serieRepository){
         this.serieRepository = serieRepository;
@@ -42,6 +43,7 @@ public class Principal {
                     7 - Buscar séries por categoria
                     8 - Buscar séries por número de temporadas e bem avaliadas
                     9 - Buscar episódio pelo nome
+                    10 - Buscar top 5 episódios de série
                                     
                     0 - Sair                                 
                     """;
@@ -79,6 +81,9 @@ public class Principal {
                 case 9:
                     findEpisodeByExcerpt();
                     break;
+                case 10:
+                    findTopEpisodesBySerie();
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -86,6 +91,18 @@ public class Principal {
                     System.out.println("Opção inválida");
             }
 
+        }
+
+    }
+
+    private void findTopEpisodesBySerie() {
+        findSerieByTitle();
+        if (serieOptional.isPresent()){
+            Serie serie = serieOptional.get();
+            List<Episodes> topEpisodes = serieRepository.findTop5EpisodesBySerie(serie);
+            topEpisodes.forEach(e -> System.out.printf(
+                    "Série: %s - Temporada: %s - Episódio: %d - %s, rate: %.1f\n", e.getSerie().getTitle(), e.getSeason(),
+                    e.getNumEpisode(), e.getTitle(), e.getRate()));
         }
 
     }
@@ -139,9 +156,9 @@ public class Principal {
     private void findSerieByTitle() {
         System.out.println("Digite o nome da serie que deseja buscar: ");
         var name = scanner.nextLine();
-        Optional<Serie> serieFetched = serieRepository.findByTitleContainingIgnoreCase(name);
-        if (serieFetched.isPresent()){
-            System.out.println(serieFetched.get());
+        serieOptional = serieRepository.findByTitleContainingIgnoreCase(name);
+        if (serieOptional.isPresent()){
+            System.out.println(serieOptional.get());
         }else {
             System.out.println("Série não encontrada.");
         }
