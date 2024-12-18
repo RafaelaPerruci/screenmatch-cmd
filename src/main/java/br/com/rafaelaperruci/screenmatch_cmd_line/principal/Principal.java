@@ -88,13 +88,15 @@ public class Principal {
     }
 
     private void findSeriesTotalSeasonsWellRated() {
-        System.out.println("Digite o número máximo de temporadas que deseja buscar séries correspondentes: ");
-        var temporadas = scanner.nextInt();
+        System.out.println("Digite o número máximo de total que deseja buscar séries correspondentes: ");
+        var total = scanner.nextInt();
         System.out.println("Digite a avaliação mínima que deseja para descobrir séries: ");
         var rate = scanner.nextDouble();
-        List<Serie> series = serieRepository.findByTotalSeasonsLessThanEqualAndAndRateGreaterThanEqual(temporadas, rate);
-        System.out.println("");
+//        List<Serie> series = serieRepository.findByTotalSeasonsLessThanEqualAndAndRateGreaterThanEqual(total, rate);
+        List<Serie> series = serieRepository.seriesForSeasonAndEspecificRate(total, rate);
+        System.out.println("********** Filtered series " + "*".repeat(10));
         series.forEach(s -> System.out.println(s.getTitle() + " - Avaliação: " + s.getRate()));
+        System.out.println();
     }
 
     private void findSeriesByCategory() {
