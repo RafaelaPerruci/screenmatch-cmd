@@ -1,6 +1,7 @@
 package br.com.rafaelaperruci.screenmatch_cmd_line.repository;
 
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.Category;
+import br.com.rafaelaperruci.screenmatch_cmd_line.models.Episodes;
 import br.com.rafaelaperruci.screenmatch_cmd_line.models.Serie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,4 +23,7 @@ public interface SerieRepository extends JpaRepository<Serie, Long> {
 //   List<Serie> seriesForSeasonAndEspecificRate();
    @Query("SELECT s FROM Serie s WHERE s.totalSeasons <= :total AND s.rate >= :rate")
    List<Serie> seriesForSeasonAndEspecificRate(Integer total, Double rate);
+
+   @Query("SELECT e FROM Serie s JOIN s.episodes e WHERE e.title ILIKE %:excerpt%")
+   List<Episodes> findEpisodesByExcerpt(String excerpt);
 }
