@@ -124,7 +124,7 @@ public class Serie {
     }
 
     public void setEpisodes(List<Episodes> episodes) {
-        episodes.forEach(e -> e.setSerie(this));
+//        episodes.forEach(e -> e.setSerie(this));
         //associando a cada episódio a série que ele pertence
         //antes de setar a lista intera de episodios
         this.episodes = episodes;

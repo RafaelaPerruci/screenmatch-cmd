@@ -247,6 +247,7 @@ public class Principal {
                     .collect(Collectors.toList());
 
             serieFound.setEpisodes(episodes);
+            episodes.forEach(e -> e.setSerie(serieFound));
             serieRepository.save(serieFound);
 
 
