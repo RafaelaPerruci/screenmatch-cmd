@@ -32,4 +32,7 @@ public interface SerieRepository extends JpaRepository<Serie, Long> {
 
    @Query("SELECT e FROM Serie s JOIN s.episodes e WHERE s = :serie AND YEAR(e.date) >= :year")
    List<Episodes> findEpisodesByYear(Serie serie, Integer year);
+
+
+   List<Serie> findTop5ByOrderByEpisodesDateDesc();
 }

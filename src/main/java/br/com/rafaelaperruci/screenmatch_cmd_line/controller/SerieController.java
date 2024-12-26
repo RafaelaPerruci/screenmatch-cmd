@@ -4,24 +4,31 @@ import br.com.rafaelaperruci.screenmatch_cmd_line.dto.SerieDTO;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/series")
 public class SerieController {
 
     @Autowired
     private SerieService service;
 
-    @GetMapping("/series")
+    @GetMapping
     public List<SerieDTO> getSeries(){
         return service.getAllSeries();
 
     }
+    @GetMapping("/top-five")
 
-    @GetMapping("/inicio")
-    public String getStart(){
-        return "Bem-vindo ao screen-match application";
+    public List<SerieDTO> getTopFiveSeries(){
+        return service.getTopFiveSeries();
+    }
+
+    @GetMapping("/last-releases")
+    public List<SerieDTO> getLastReleases(){
+        return service.getLastReleases();
     }
 }
