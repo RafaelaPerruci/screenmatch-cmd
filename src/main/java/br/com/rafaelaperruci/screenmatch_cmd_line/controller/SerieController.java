@@ -1,5 +1,6 @@
 package br.com.rafaelaperruci.screenmatch_cmd_line.controller;
 
+import br.com.rafaelaperruci.screenmatch_cmd_line.dto.EpisodesDTO;
 import br.com.rafaelaperruci.screenmatch_cmd_line.dto.SerieDTO;
 import br.com.rafaelaperruci.screenmatch_cmd_line.services.SerieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,4 +38,20 @@ public class SerieController {
     public SerieDTO getById(@PathVariable Long id){
         return service.getById(id);
     }
+
+    @GetMapping("{id}/seasons/all")
+    public List<EpisodesDTO> getAllSeasons(@PathVariable Long id){
+        return service.getAllSeasons(id);
+    }
+
+    @GetMapping("{id}/seasons/{num}")
+    public List<EpisodesDTO> getSesonsByNum(@PathVariable Long id, @PathVariable Integer num){
+        return service.getSeasonsByNum(id, num);
+    }
+
+    @GetMapping("/categoria/{genre}")
+    public List<SerieDTO> getSeriesByGenre(@PathVariable String genre){
+        return service.getSeriesByGenre(genre);
+    }
+
 }
